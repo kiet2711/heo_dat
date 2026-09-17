@@ -23,6 +23,12 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Select Xcode with Swift 6.2
+        shell: bash
+        run: |
+          echo "DEVELOPER_DIR=/Applications/Xcode_26.3.app/Contents/Developer" >> "$GITHUB_ENV"
+          /Applications/Xcode_26.3.app/Contents/Developer/usr/bin/xcodebuild -version
+
       - name: Install JavaScript dependencies
         run: npm ci
 
