@@ -1,0 +1,25 @@
+{
+  "cli": {
+    "version": ">= 18.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "unsigned": {
+      "distribution": "internal",
+      "ios": {
+        "withoutCredentials": true,
+        "resourceClass": "m-medium",
+        "config": "unsigned-ios.yml"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  }
+}

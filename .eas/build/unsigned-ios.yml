@@ -1,0 +1,16 @@
+build:
+  name: Build unsigned iOS IPA
+  steps:
+    - eas/checkout
+    - eas/use_npm_token
+    - eas/install_node_modules
+    - eas/resolve_build_config
+    - eas/prebuild
+    - run:
+        name: Install iOS pods
+        working_directory: ./ios
+        command: pod install
+    - eas/configure_eas_update
+    - eas/generate_gymfile_from_template
+    - eas/run_fastlane
+    - eas/find_and_upload_build_artifacts
