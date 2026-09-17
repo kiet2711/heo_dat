@@ -23,14 +23,22 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Select Xcode with Swift 6.2
+      - name: Select compatible Xcode
         shell: bash
         run: |
-          echo "DEVELOPER_DIR=/Applications/Xcode_26.3.app/Contents/Developer" >> "$GITHUB_ENV"
-          /Applications/Xcode_26.3.app/Contents/Developer/usr/bin/xcodebuild -version
+          echo "DEVELOPER_DIR=/Applications/Xcode_16.4.app/Contents/Developer" >> "$GITHUB_ENV"
+          /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/xcodebuild -version
 
       - name: Install JavaScript dependencies
         run: npm ci
+
+      # Expo SDK 57's JSI package declares Swift tools 6.2, while its sources
+      # are compatible with Swift 6.1 used by the stable Xcode 16.4 runner.
+      - name: Make Expo JSI compatible with Xcode 16.4
+        shell: bash
+        run: |
+          sed -i '' '1s/swift-tools-version: 6\.2/swift-tools-version: 6.1/' node_modules/expo-modules-jsi/apple/Package.swift
+          head -n 1 node_modules/expo-modules-jsi/apple/Package.swift
 
       - name: Generate native iOS project
         run: npx expo prebuild --platform ios --clean --non-interactive
