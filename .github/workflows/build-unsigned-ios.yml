@@ -10,7 +10,8 @@ permissions:
 
 jobs:
   build-unsigned-ipa:
-    runs-on: macos-14
+    # React Native used by Expo SDK 57 needs Xcode 16.1 or newer.
+    runs-on: macos-15
     timeout-minutes: 45
     steps:
       - name: Checkout source
