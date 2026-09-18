@@ -45,6 +45,9 @@ jobs:
           find "$JSI/Sources" -name '*.swift' -exec sed -i '' 's/weak let/weak var/g' {} +
           perl -0pi -e 's/(_ arguments: consuming JavaScriptValuesBuffer),\n(\s*\) async throws)/$1\n$2/' "$JSI/Sources/ExpoModulesJSI/Runtime/JavaScriptRuntime.swift"
           sed -i '' 's/SWIFT_RETURNS_RETAINED RuntimeScheduler/RuntimeScheduler/g' "$JSI/Sources/ExpoModulesJSI-Cxx/include/RuntimeScheduler.h"
+          sed -i '' 's/class JavaScriptPropNameID: JavaScriptType/class JavaScriptPropNameID: \@unchecked Sendable, JavaScriptType/' "$JSI/Sources/ExpoModulesJSI/Runtime/JavaScriptPropNameID.swift"
+          sed -i '' 's/JavaScriptError: Error, Sendable/JavaScriptError: Error, \@unchecked Sendable/' "$JSI/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptError.swift"
+          sed -i '' 's/JavaScriptValue: JavaScriptType, Equatable, Escapable/JavaScriptValue: \@unchecked Sendable, JavaScriptType, Equatable, Escapable/' "$JSI/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptValue.swift"
 
       - name: Generate native iOS project
         run: npx expo prebuild --platform ios --clean --non-interactive
