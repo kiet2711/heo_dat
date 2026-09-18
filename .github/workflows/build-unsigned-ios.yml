@@ -50,6 +50,9 @@ jobs:
           sed -i '' 's/class JavaScriptPropNameID: JavaScriptType/class JavaScriptPropNameID: \@unchecked Sendable, JavaScriptType/' "$JSI/Sources/ExpoModulesJSI/Runtime/JavaScriptPropNameID.swift"
           sed -i '' 's/JavaScriptError: Error, Sendable/JavaScriptError: Error, \@unchecked Sendable/' "$JSI/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptError.swift"
           sed -i '' 's/JavaScriptValue: JavaScriptType, Equatable, Escapable/JavaScriptValue: \@unchecked Sendable, JavaScriptType, Equatable, Escapable/' "$JSI/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptValue.swift"
+          RUNTIME="$JSI/Sources/ExpoModulesJSI/Runtime/JavaScriptRuntime.swift"
+          sed -i '' -E 's/nonisolated\(unsafe\) let (thisPtr|argumentsPtr|resultPtr) = \1/let \1 = NonisolatedUnsafeVar(\1)/' "$RUNTIME"
+          sed -i '' 's/writeJSIValue(to: resultPtr)/writeJSIValue(to: resultPtr.value)/g; s/UnsafeMutablePointer(mutating: thisPtr)/UnsafeMutablePointer(mutating: thisPtr.value)/g; s/start: argumentsPtr,/start: argumentsPtr.value,/g; s/runtime.pointee, thisPtr)/runtime.pointee, thisPtr.value)/g' "$RUNTIME"
 
       - name: Generate native iOS project
         run: npx expo prebuild --platform ios --clean --non-interactive
