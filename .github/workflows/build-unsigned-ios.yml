@@ -35,6 +35,17 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
 
+      # expo-modules-jsi 57.1.0 predates the Swift 6.2 diagnostics bundled
+      # with this runner. These are source-compatible corrections, applied
+      # only to the clean CI installation.
+      - name: Apply Swift 6.2 compatibility patch
+        shell: bash
+        run: |
+          JSI="node_modules/expo-modules-jsi/apple"
+          find "$JSI/Sources" -name '*.swift' -exec sed -i '' 's/weak let/weak var/g' {} +
+          perl -0pi -e 's/(_ arguments: consuming JavaScriptValuesBuffer),\n(\s*\) async throws)/$1\n$2/' "$JSI/Sources/ExpoModulesJSI/Runtime/JavaScriptRuntime.swift"
+          sed -i '' 's/SWIFT_RETURNS_RETAINED RuntimeScheduler/RuntimeScheduler/g' "$JSI/Sources/ExpoModulesJSI-Cxx/include/RuntimeScheduler.h"
+
       - name: Generate native iOS project
         run: npx expo prebuild --platform ios --clean --non-interactive
 
